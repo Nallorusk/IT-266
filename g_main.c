@@ -67,6 +67,7 @@ void WriteLevel (char *filename);
 void ReadLevel (char *filename);
 void InitGame (void);
 void G_RunFrame (void);
+void SpawnWaves (void);
 
 
 //===================================================================
@@ -284,6 +285,7 @@ CheckDMRules
 */
 void CheckDMRules (void)
 {
+
 	int			i;
 	gclient_t	*cl;
 
@@ -367,6 +369,8 @@ void G_RunFrame (void)
 	level.framenum++;
 	level.time = level.framenum*FRAMETIME;
 
+	//gi.cprintf(ent, PRINT_HIGH, "%d", ent->client->resp.player_points); 
+
 	// choose a client for monsters to target this frame
 	AI_SetSightClient ();
 
@@ -375,6 +379,13 @@ void G_RunFrame (void)
 	if (level.exitintermission)
 	{
 		ExitLevel ();
+		return;
+	}
+
+	//Spawn Waves every 15 seconds
+	if(fmod(level.time, 15) == 0)
+	{
+		SpawnWaves ();
 		return;
 	}
 
@@ -412,7 +423,7 @@ void G_RunFrame (void)
 	}
 
 	// see if it is time to end a deathmatch
-	CheckDMRules ();
+	//CheckDMRules ();
 
 	// see if needpass needs updated
 	CheckNeedPass ();
@@ -421,3 +432,12 @@ void G_RunFrame (void)
 	ClientEndServerFrames ();
 }
 
+
+void SpawnWaves (void)
+{
+	int					wave = 0;
+
+	gi.bprintf(PRINT_HIGH, "Spawning Wave.\n");
+
+	wave++;
+}

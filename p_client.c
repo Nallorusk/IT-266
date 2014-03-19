@@ -597,9 +597,10 @@ void InitClientPersistant (gclient_t *client)
 
 	client->pers.weapon = item;
 
+	
 	client->pers.health			= 100;
 	client->pers.max_health		= 100;
-
+	
 	client->pers.max_bullets	= 200;
 	client->pers.max_shells		= 100;
 	client->pers.max_rockets	= 50;
@@ -616,6 +617,8 @@ void InitClientResp (gclient_t *client)
 	memset (&client->resp, 0, sizeof(client->resp));
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->pers;
+	
+	client->resp.player_points	= 0;	//Set the player points to 0.
 }
 
 /*
@@ -1568,6 +1571,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	level.current_entity = ent;
 	client = ent->client;
 
+	if(fmod(level.time, 15) == 0)
+	{
+		ent->client->resp.player_points += 5;
+		return;
+	}
+
 	if (level.intermissiontime)
 	{
 		client->ps.pmove.pm_type = PM_FREEZE;
@@ -1752,6 +1761,8 @@ void ClientBeginServerFrame (edict_t *ent)
 		return;
 
 	client = ent->client;
+
+	
 
 	if (deathmatch->value &&
 		client->pers.spectator != client->resp.spectator &&

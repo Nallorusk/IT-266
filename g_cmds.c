@@ -2,6 +2,7 @@
 #include "m_player.h"
 
 
+
 char *ClientTeam (edict_t *ent)
 {
 	char		*p;
@@ -622,6 +623,52 @@ void Cmd_InvDrop_f (edict_t *ent)
 }
 
 /*
+	Cmd_WeaponUpgrade_f
+*/
+void Cmd_WeaponUpgrade_f (edict_t *ent)
+{
+	gitem_t		*it;
+	
+
+	ValidateSelectedItem(ent);
+
+	if (ent->client->pers.selected_item == -1)		//No weapon selected!
+	{	//Print error message
+		gi.cprintf (ent, PRINT_HIGH, "No weapon to upgrade.\n");
+		gi.cprintf (ent, PRINT_HIGH, "%d", ent->client->resp.player_points);
+		return;
+	}
+
+	it = &itemlist[ent->client->pers.selected_item];	//Can't upgrade this weapon!
+
+	if (it->wpn_upgrd == 0 && ent->client->resp.player_points < 140)
+	{
+		//Print error message
+		gi.cprintf (ent, PRINT_HIGH, "Not enough points to upgrade.\n");
+		gi.cprintf (ent, PRINT_HIGH, "%d points.\n", ent->client->resp.player_points);
+		return;
+	}
+	
+	if (it->wpn_upgrd == 1)
+	{
+		//Print error message
+		gi.cprintf (ent, PRINT_HIGH, "Weapon already upgraded.\n");
+		gi.cprintf (ent, PRINT_HIGH, "%d points. \n", ent->client->resp.player_points);
+		return;
+	}
+	else
+	{
+		it->wpn_upgrd = 1;		//The flag is now non-zero, meaning it's upgraded!
+		ent->client->resp.player_points -= 140;
+
+		gi.cprintf (ent, PRINT_HIGH, "Weapon upgraded successfully.\n");
+		gi.cprintf (ent, PRINT_HIGH, "%d points.\n", ent->client->resp.player_points);
+		return;
+	}
+	
+	
+}
+/*
 =================
 Cmd_Kill_f
 =================
@@ -960,6 +1007,9 @@ void ClientCommand (edict_t *ent)
 		Cmd_WeapNext_f (ent);
 	else if (Q_stricmp (cmd, "weaplast") == 0)
 		Cmd_WeapLast_f (ent);
+	//handler for weapon upgrade
+	else if (Q_stricmp (cmd, "weaponupgrade") == 0)
+		Cmd_WeaponUpgrade_f (ent);
 	else if (Q_stricmp (cmd, "kill") == 0)
 		Cmd_Kill_f (ent);
 	else if (Q_stricmp (cmd, "putaway") == 0)

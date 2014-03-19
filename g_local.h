@@ -239,6 +239,10 @@ typedef struct gitem_s
 	int			tag;
 
 	char		*precaches;		// string of all models, sounds, and images this item will use
+
+	//Flag value for weapon upgrade
+	int			wpn_upgrd;
+	int			wpn_score;
 } gitem_t;
 
 
@@ -839,11 +843,14 @@ typedef struct
 
 	int			power_cubes;	// used for tracking the cubes in coop games
 	int			score;			// for calculating total unit score in coop games
-
+	
 	int			game_helpchanged;
 	int			helpchanged;
 
 	qboolean	spectator;			// client is a spectator
+	
+	
+
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns
@@ -852,9 +859,13 @@ typedef struct
 	client_persistant_t	coop_respawn;	// what to set client->pers to on a respawn
 	int			enterframe;			// level.framenum the client entered the game
 	int			score;				// frags, etc
+	
 	vec3_t		cmd_angles;			// angles sent over in the last command
 
+	
 	qboolean	spectator;			// client is a spectator
+	
+	int			player_points;		//Points to upgrade weapons
 } client_respawn_t;
 
 // this structure is cleared on each PutClientInServer(),
